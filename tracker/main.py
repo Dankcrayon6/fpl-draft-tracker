@@ -56,11 +56,13 @@ def run(offline_dir=None, out_dir=None):
     finished, current, current_done = finished_gameweeks(game, bootstrap)
     refresh = set(finished[-2:])
     teamweeks, warnings = {}, []
+    points_by_gw = {}
     for gw in finished:
         live = api.live(gw, refresh=gw in refresh)
         if "elements" not in live:
             raise SystemExit(f"GW{gw} live data missing 'elements' — the API format may have changed.")
         players = build_players(bootstrap, live)
+        points_by_gw[gw] = {pid: p.points for pid, p in players.items()}
         rows = []
         for eid in names:
             pj = api.picks(eid, gw, refresh=gw in refresh)
@@ -75,10 +77,11 @@ def run(offline_dir=None, out_dir=None):
 
     hits = evaluate(teamweeks, cfg)
 
-    tx_counts = {}
+    tx_counts, tx_list = {}, []
     try:
         tx = api.transactions(cfg["league_id"])
-        for t in tx.get("transactions", []):
+        tx_list = tx.get("transactions", [])
+        for t in tx_list:
             if t.get("result") in ("a", "accepted"):
                 tx_counts[t.get("entry")] = tx_counts.get(t.get("entry"), 0) + 1
     except Exception as e:  # transactions are a nice-to-have
@@ -87,6 +90,8 @@ def run(offline_dir=None, out_dir=None):
     now = dt.datetime.now(dt.timezone(dt.timedelta(hours=10)))
     ctx = report.build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
                                finished, current, current_done, warnings, now)
+    ctx["waivers"] = report.build_waivers(tx_list, names, teamweeks, points_by_gw,
+                                          {el["id"]: el.get("web_name", "?") for el in bootstrap["elements"]})
     for fname, html in report.render_html(ctx).items():
         with open(os.path.join(out_dir, fname), "w") as f:
             f.write(html)

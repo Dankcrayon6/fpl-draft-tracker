@@ -69,7 +69,7 @@ class DraftApi:
         return self._get(f"/league/{league_id}/details")
 
     def transactions(self, league_id):
-        return self._get(f"/draft/league/{league_id}/transactions")
+        return self._get(f"/draft/league/{league_id}/transactions", cache=True, refresh=True)
 
     def picks(self, entry_id, gw, refresh=False):
         return self._get(f"/entry/{entry_id}/event/{gw}", cache=True, refresh=refresh)

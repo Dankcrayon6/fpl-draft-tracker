@@ -62,6 +62,30 @@ def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
                 rule_text={r["id"]: r.get("reward") or r.get("forfeit") for r in rules})
 
 
+def build_waivers(tx_list, names, teamweeks, points_by_gw, el_names):
+    """Accepted waivers / free-agent signings, with points gained and lost."""
+    kinds = {"w": "Waiver", "f": "Free agent"}
+    acc = [t for t in tx_list if t.get("result") in ("a", "accepted") and t.get("entry") in names]
+    finished = sorted(points_by_gw)
+    rows = []
+    for t in acc:
+        gw, pin, pout = t.get("event"), t.get("element_in"), t.get("element_out")
+        d = names[t["entry"]]
+        gained = 0
+        for g in finished:
+            if g < gw:
+                continue
+            for tw in teamweeks.get(g, []):
+                if tw.drafter == d:
+                    gained += sum(p.points for p in tw.players if p.id == pin and p.in_final_xi)
+        lost = sum(points_by_gw[g].get(pout, 0) for g in finished if g >= gw)
+        rows.append(dict(drafter=d, gw=gw, kind=kinds.get(t.get("kind"), t.get("kind") or "?"),
+                         player_in=el_names.get(pin, f"#{pin}"), player_out=el_names.get(pout, f"#{pout}"),
+                         gained=gained, lost=lost, scored=gw in points_by_gw or any(g >= gw for g in finished)))
+    latest = max((r["gw"] for r in rows), default=None)
+    return dict(rows=rows, latest=latest)
+
+
 # ---------------------------------------------------------------- summary --
 def render_summary(c):
     if not c["latest"]:
@@ -119,6 +143,10 @@ td.zero{color:#c9c3d6}tr.total td{border-top:2px solid var(--line);background:va
 th.sortable{cursor:pointer;user-select:none}th.sorted{color:var(--accent)}
 table.stats th:first-child,table.stats td:first-child{position:sticky;left:0;background:var(--card);z-index:1}
 td.lead{background:var(--goodbg);color:var(--good);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.two section{margin:0 0 16px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.who{font-size:15px!important}.moves{list-style:none;padding:0;margin:6px 0 0}.moves li{margin:4px 0}
+.in{color:var(--good);font-weight:600}.out{color:var(--bad);margin-left:6px}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -153,7 +181,7 @@ def _grid(c, rules, cls):
 
 
 PAGES = [("index.html", "Gameweek Summary"), ("prizes.html", "Minor Prizes"),
-         ("forfeits.html", "Minor Forfeits"), ("stats.html", "Stats")]
+         ("forfeits.html", "Minor Forfeits"), ("stats.html", "Stats"), ("waivers.html", "Waivers")]
 
 STAT_COLS = [  # key, header, tooltip
     ("pts", "Pts", "Points"), ("avg", "Avg", "Average points per gameweek"),
@@ -327,4 +355,50 @@ def render_html(c):
         f"Tap a column heading to sort. Green = top of that column. DC = defensive contribution thresholds hit.</p>"
         f"</section><script type='application/json' id='statdata'>{data_json}</script>"
         f"<script>{STATS_JS}</script>" + foot)
+
+    # --- Waivers page
+    w = c.get("waivers") or {"rows": [], "latest": None}
+    parts = [page_head("waivers.html")]
+    if w["latest"]:
+        week = [r for r in w["rows"] if r["gw"] == w["latest"]]
+        by_d = {}
+        for r in week:
+            by_d.setdefault(r["drafter"], []).append(r)
+        cards = []
+        for d in c["order"]:
+            if d not in by_d:
+                continue
+            items = "".join(f"<li><span class='in'>▲ {e(r['player_in'])}</span> "
+                            f"<span class='out'>▼ {e(r['player_out'])}</span> "
+                            f"<span class='reward'>{e(r['kind'])}</span></li>" for r in by_d[d])
+            cards.append(f"<div class='card'><b class='who'>{e(d)}</b><ul class='moves'>{items}</ul></div>")
+        quiet = [d for d in c["order"] if d not in by_d]
+        parts.append(f"<section><h2>GW{w['latest']} successful waivers</h2>"
+                     f"<div class='cards'>{''.join(cards) or '<p>None.</p>'}</div>"
+                     + (f"<p class='reward'>No moves: {e(', '.join(quiet))}</p>" if quiet else "")
+                     + "</section>")
+    counted = [r for r in w["rows"] if any(g >= r["gw"] for g in c["gws"])]
+    def tbl(title, key, desc, cols):
+        top = sorted(counted, key=lambda r: (-r[key], r["gw"]))[:10]
+        body = "".join(f"<tr><td>{i}</td><td><b>{e(r['drafter'])}</b></td><td>{e(r[cols])}</td>"
+                       f"<td class='num'>GW{r['gw']}</td><td class='num'><b>{r[key]}</b></td></tr>"
+                       for i, r in enumerate(top, 1)) or "<tr><td colspan='5'>No data yet.</td></tr>"
+        return (f"<section><h2>{title}</h2><p class='reward'>{desc}</p><div class='scroll'><table>"
+                f"<tr><th>#</th><th>Drafter</th><th>Player</th><th class='num'>Moved</th>"
+                f"<th class='num'>Pts</th></tr>{body}</table></div></section>")
+    parts.append("<div class='two'>" +
+                 tbl("Most points gained", "gained", "Points a signing has scored for the drafter since "
+                     "joining (only weeks they were in the XI after auto-subs).", "player_in") +
+                 tbl("Most points lost", "lost", "Points a dropped player has scored since being let go, "
+                     "wherever they've played.", "player_out") + "</div>")
+    net = {d: (sum(r["gained"] for r in counted if r["drafter"] == d),
+               sum(r["lost"] for r in counted if r["drafter"] == d),
+               sum(1 for r in w["rows"] if r["drafter"] == d)) for d in c["drafters"]}
+    nrows = "".join(f"<tr><td><b>{e(d)}</b></td><td class='num'>{net[d][2]}</td><td class='num'>{net[d][0]}</td>"
+                    f"<td class='num'>{net[d][1]}</td><td class='num'><b>{(net[d][0]-net[d][1]) and format(net[d][0]-net[d][1], '+d') or 0}</b></td></tr>"
+                    for d in sorted(c["drafters"], key=lambda d: -(net[d][0] - net[d][1])))
+    parts.append("<section><h2>Waiver balance by drafter</h2><div class='scroll'><table><tr><th>Drafter</th>"
+                 "<th class='num'>Moves</th><th class='num'>Gained</th><th class='num'>Lost</th>"
+                 f"<th class='num'>Net</th></tr>{nrows}</table></div></section>")
+    pages["waivers.html"] = "".join(parts) + foot
     return pages

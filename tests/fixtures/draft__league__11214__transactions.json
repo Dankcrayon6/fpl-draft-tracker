@@ -1,1 +1,1 @@
-{"transactions": [{"entry": 5000, "result": "a", "event": 2}, {"entry": 5000, "result": "di", "event": 2}, {"entry": 5003, "result": "a", "event": 3}]}
+{"transactions": [{"entry": 5000, "result": "a", "event": 2, "kind": "w", "element_in": 10, "element_out": 30}, {"entry": 5000, "result": "di", "event": 2, "kind": "w", "element_in": 11, "element_out": 31}, {"entry": 5003, "result": "a", "event": 3, "kind": "f", "element_in": 55, "element_out": 8}]}

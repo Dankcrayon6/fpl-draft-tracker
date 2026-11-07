@@ -117,8 +117,9 @@ def main():
                             "player_first_name": NAMES[e], "player_last_name": "X"} for e in range(8)],
         "standings": []})
     w("draft__league__11214__transactions", {"transactions": [
-        {"entry": 5000, "result": "a", "event": 2}, {"entry": 5000, "result": "di", "event": 2},
-        {"entry": 5003, "result": "a", "event": 3}]})
+        {"entry": 5000, "result": "a", "event": 2, "kind": "w", "element_in": 10, "element_out": 30},
+        {"entry": 5000, "result": "di", "event": 2, "kind": "w", "element_in": 11, "element_out": 31},
+        {"entry": 5003, "result": "a", "event": 3, "kind": "f", "element_in": 55, "element_out": 8}]})
     for gw, lv in lives.items():
         w(f"event__{gw}__live", lv)
     for (entry, gw), pj in picks.items():

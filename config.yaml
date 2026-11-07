@@ -126,7 +126,7 @@ awards_night_sips_top: 8
 # which part of the photo stays in view. Use a list to show several images side by side.
 # Page names: index (Gameweek Summary), prizes, forfeits, stats, waivers
 backgrounds:
-  index: ["assets/summary-1.jpg center top", "assets/summary-2.jpg 28% top"]
+  index: "assets/summary.jpg 36% top"
   prizes: "assets/prizes.jpg center 20%"
   forfeits:
   stats:

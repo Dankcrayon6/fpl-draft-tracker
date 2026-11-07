@@ -84,12 +84,9 @@ def run(offline_dir=None, out_dir=None):
     except Exception as e:  # transactions are a nice-to-have
         warnings.append(f"transactions unavailable: {e}")
 
-    sheet_path = os.path.join(ROOT, "data", "sheet_marks.json")
-    sheet = json.load(open(sheet_path)) if os.path.exists(sheet_path) else None
-
     now = dt.datetime.now(dt.timezone(dt.timedelta(hours=10)))
     ctx = report.build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
-                               finished, current, current_done, warnings, sheet, now)
+                               finished, current, current_done, warnings, now)
     with open(os.path.join(out_dir, "index.html"), "w") as f:
         f.write(report.render_html(ctx))
     with open(os.path.join(out_dir, "summary.md"), "w") as f:

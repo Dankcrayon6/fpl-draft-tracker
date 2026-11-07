@@ -3,7 +3,7 @@ from html import escape as e
 
 
 def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
-                  finished, current, current_done, warnings, sheet, now):
+                  finished, current, current_done, warnings, now):
     drafters = list(names.values())
     eid_by_name = {v: k for k, v in names.items()}
     gws = sorted(teamweeks)
@@ -31,19 +31,6 @@ def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
     latest = gws[-1] if gws else None
     latest_rows = sorted(teamweeks.get(latest, []), key=lambda t: -t.points) if latest else []
 
-    # spreadsheet comparison
-    diffs = []
-    if sheet:
-        upto = sheet.get("compare_up_to_gw", 0)
-        for rid, by_d in sheet["marks"].items():
-            for d in drafters:
-                mine = {g for g in grid.get(rid, {}).get(d, []) if g <= upto and g in gws}
-                theirs = {g for g in by_d.get(d, []) if g <= upto and g in gws}
-                for g in sorted(mine - theirs):
-                    diffs.append((rid, d, g, "tracker found it, sheet doesn't have it"))
-                for g in sorted(theirs - mine):
-                    diffs.append((rid, d, g, "sheet has it, tracker didn't find it"))
-
     hi = max(n_prize.values()) if n_prize else 0
     lo = min(n_prize.values()) if n_prize else 0
     return dict(cfg=cfg, league_name=league["league"].get("name", "FPL Draft"),
@@ -51,8 +38,7 @@ def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
                 tx={d: tx_counts.get(eid_by_name[d], 0) for d in drafters},
                 gws=gws, pts=pts, total=total, bench=bench, grid=grid, hits=hits,
                 n_prize=n_prize, n_forf=n_forf, money=money, latest=latest, latest_rows=latest_rows,
-                current=current, current_done=current_done, warnings=warnings, diffs=diffs,
-                sheet=sheet, now=now,
+                current=current, current_done=current_done, warnings=warnings, now=now,
                 most=[d for d in drafters if n_prize[d] == hi], least=[d for d in drafters if n_prize[d] == lo],
                 rule_name={r["id"]: r["name"] for r in rules},
                 rule_text={r["id"]: r.get("reward") or r.get("forfeit") for r in rules})
@@ -203,15 +189,6 @@ def render_html(c):
         body.append(f"<tr><td><b>{e(d)}</b></td>{''.join(tds)}</tr>")
     out.append(f"<section><h2>Points by gameweek</h2><div class='scroll'><table><tr><th>Drafter</th>{head}</tr>"
                f"{''.join(body)}</table></div><p class='reward'>Green = week's high, red = week's low.</p></section>")
-
-    if c["sheet"]:
-        upto = c["sheet"].get("compare_up_to_gw")
-        if c["diffs"]:
-            items = "".join(f"<li>GW{g} · <b>{e(d)}</b> · {e(c['rule_name'].get(r, r))} — {e(why)}</li>"
-                            for r, d, g, why in sorted(c["diffs"], key=lambda x: (x[2], x[0], x[1])))
-        else:
-            items = "<li>No differences — the tracker matches the spreadsheet.</li>"
-        out.append(f"<section><h2>Check against the spreadsheet (GW1–{upto})</h2><ul>{items}</ul></section>")
 
     if c["warnings"]:
         out.append("<section><h2>Data notes</h2><ul class='warn'>" +

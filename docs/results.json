@@ -1,0 +1,413 @@
+{
+ "updated": "2026-11-07T18:37:44.225360+10:00",
+ "finished_gws": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "hits": [
+  {
+   "kind": "forfeit",
+   "rule": "f_25_or_less",
+   "gw": 1,
+   "entry_id": 55426,
+   "drafter": "Dilan",
+   "detail": "21 pts",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_three_zero",
+   "gw": 1,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "James 0, Frimpong 0, Colwill 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 1,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "James 0, Frimpong 0, Colwill 0",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_mid_30",
+   "gw": 1,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "MIDs 37 pts (Saka 9, Rogers 8, Tzolis 6, Tonali 2, Gakpo 12)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_both_gk_1",
+   "gw": 2,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "Donnarumma 0, Kinsky 1",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_four_carded",
+   "gw": 2,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "4 carded: Collins, Van de Ven, Dunk, Tavernier",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_own_goal",
+   "gw": 2,
+   "entry_id": 55424,
+   "drafter": "Aidan",
+   "detail": "Jo\u00e3o Pedro OG",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_own_goal",
+   "gw": 2,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "Donnarumma OG",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 2,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "Van de Ven 0, Dunk -1",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_hattrick",
+   "gw": 2,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "B.Fernandes hattrick",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_mid_30",
+   "gw": 2,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "MIDs 38 pts (B.Fernandes 23, Dewsbury-Hall 2, Schade 10, Tavernier 1, Rashford 2)",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_mid_30",
+   "gw": 2,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "MIDs 32 pts (Palmer 7, Rayan 2, Ndiaye 4, Scott 12, Neto 7)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_own_goal",
+   "gw": 3,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "Thiaw OG",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 4,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "bench 20 pts (Kinsky 7, R\u00faben 6, David 0, Igor Jesus 7)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 4,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "bench 26 pts (Horn\u00ed\u010dek 1, Kostoulas 10, Gvardiol 11, McBurnie 4)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 4,
+   "entry_id": 55426,
+   "drafter": "Dilan",
+   "detail": "Foden sent off",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 4,
+   "entry_id": 55426,
+   "drafter": "Dilan",
+   "detail": "Hall 0, Foden -2",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 4,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Dedi\u0107 0, N.Jackson 0",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_50_three_in_row",
+   "gw": 4,
+   "entry_id": 55426,
+   "drafter": "Dilan",
+   "detail": "GW2-4 all 50+",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_25_or_less",
+   "gw": 5,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "25 pts",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_12_not_subbed",
+   "gw": 5,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "Gro\u00df 14 left on bench",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_12_not_subbed",
+   "gw": 5,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Brobbey 17 left on bench",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 5,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Giles 0, Khusanov 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 5,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "M.Sangar\u00e9 0, Wissa 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_both_gk_1",
+   "gw": 6,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "A.Becker 1, Horn\u00ed\u010dek 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_25_or_less",
+   "gw": 7,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "22 pts",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 7,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "bench 22 pts (Kelleher 2, Manzambi 11, Hill 7, Murillo 2)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_conceded_5",
+   "gw": 7,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Mitchell (conceded 5)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_four_carded",
+   "gw": 7,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "4 carded: Jacquet, B.Fernandes, Schade, Solanke",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_four_carded",
+   "gw": 7,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "4 carded: Botman, Palmer, Kamada, Thiago",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 7,
+   "entry_id": 55424,
+   "drafter": "Aidan",
+   "detail": "Janelt sent off",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 7,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Dasilva 0, Mitchell 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 8,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "bench 23 pts (Horn\u00ed\u010dek 8, Justin 6, Wissa 1, McBurnie 8)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_own_goal",
+   "gw": 8,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "Gro\u00df OG",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 8,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Palmer sent off",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_three_zero",
+   "gw": 8,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Gu\u00e9hi 0, Boscagli -1, Palmer -1",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 8,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Gu\u00e9hi 0, Boscagli -1, Palmer -1",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_def_35",
+   "gw": 8,
+   "entry_id": 55424,
+   "drafter": "Aidan",
+   "detail": "DEFs 38 pts (Affengruber 6, Muharemovi\u0107 9, Silva 8, Konsa 14, Thomas 1)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_12_not_subbed",
+   "gw": 9,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "McBurnie 12 left on bench",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 9,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "bench 25 pts (Kinsky 6, McBurnie 12, Wissa 1, Vuskovic 6)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_both_gk_1",
+   "gw": 9,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Tzolakis 1, Martinez 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_own_goal",
+   "gw": 9,
+   "entry_id": 55427,
+   "drafter": "Julius",
+   "detail": "Suzuki OG",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 9,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "Mateta sent off",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 9,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Botman 0, F.Kad\u0131o\u011flu 0",
+   "share": 1.0
+  }
+ ],
+ "warnings": []
+}

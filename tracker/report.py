@@ -147,6 +147,8 @@ td.lead{background:var(--goodbg);color:var(--good);font-weight:600}
 @media(max-width:760px){.two{grid-template-columns:1fr}}
 .who{font-size:15px!important}.moves{list-style:none;padding:0;margin:6px 0 0}.moves li{margin:4px 0}
 .in{color:var(--good);font-weight:600}.out{color:var(--bad);margin-left:6px}
+tr.drow{cursor:pointer}tr.drow:hover td{background:var(--bg)}.dname{color:var(--accent)}
+tr.dmore>td{background:var(--bg);padding:8px 10px 12px}table.sub{background:var(--card);border:1px solid var(--line);border-radius:8px}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -394,11 +396,34 @@ def render_html(c):
     net = {d: (sum(r["gained"] for r in counted if r["drafter"] == d),
                sum(r["lost"] for r in counted if r["drafter"] == d),
                sum(1 for r in w["rows"] if r["drafter"] == d)) for d in c["drafters"]}
-    nrows = "".join(f"<tr><td><b>{e(d)}</b></td><td class='num'>{net[d][2]}</td><td class='num'>{net[d][0]}</td>"
-                    f"<td class='num'>{net[d][1]}</td><td class='num'><b>{(net[d][0]-net[d][1]) and format(net[d][0]-net[d][1], '+d') or 0}</b></td></tr>"
-                    for d in sorted(c["drafters"], key=lambda d: -(net[d][0] - net[d][1])))
-    parts.append("<section><h2>Waiver balance by drafter</h2><div class='scroll'><table><tr><th>Drafter</th>"
+    played = set(c["gws"])
+    def sgn(n):
+        return format(n, "+d") if n else "0"
+    nrows = []
+    for i, d in enumerate(sorted(c["drafters"], key=lambda d: -(net[d][0] - net[d][1]))):
+        g, l, m = net[d]
+        moves = sorted([r for r in w["rows"] if r["drafter"] == d], key=lambda r: -r["gw"])
+        det = []
+        for r in moves:
+            done = any(x >= r["gw"] for x in played)
+            gp, lp = (r["gained"], r["lost"]) if done else ("–", "–")
+            nt = sgn(r["gained"] - r["lost"]) if done else "–"
+            det.append(f"<tr><td class='num'>GW{r['gw']}</td><td><span class='in'>▲ {e(r['player_in'])}</span></td>"
+                       f"<td class='num'>{gp}</td><td><span class='out'>▼ {e(r['player_out'])}</span></td>"
+                       f"<td class='num'>{lp}</td><td class='num'><b>{nt}</b></td>"
+                       f"<td class='reward'>{e(r['kind'])}{'' if done else ' · not played yet'}</td></tr>")
+        detail = ("<table class='sub'><tr><th class='num'>GW</th><th>In</th><th class='num'>Gained</th>"
+                  "<th>Out</th><th class='num'>Lost</th><th class='num'>Net</th><th></th></tr>"
+                  + ("".join(det) or "<tr><td colspan='7'>No moves yet.</td></tr>") + "</table>")
+        nrows.append(f"<tr class='drow' data-i='{i}'><td><b class='dname'>▸ {e(d)}</b></td><td class='num'>{m}</td>"
+                     f"<td class='num'>{g}</td><td class='num'>{l}</td><td class='num'><b>{sgn(g - l)}</b></td></tr>"
+                     f"<tr class='dmore' id='dm{i}' hidden><td colspan='5'>{detail}</td></tr>")
+    parts.append("<section><h2>Waiver balance by drafter</h2><p class='reward'>Tap a drafter to see each move.</p>"
+                 "<div class='scroll'><table><tr><th>Drafter</th>"
                  "<th class='num'>Moves</th><th class='num'>Gained</th><th class='num'>Lost</th>"
-                 f"<th class='num'>Net</th></tr>{nrows}</table></div></section>")
+                 f"<th class='num'>Net</th></tr>{''.join(nrows)}</table></div></section>"
+                 "<script>document.querySelectorAll('tr.drow').forEach(r=>r.addEventListener('click',()=>{"
+                 "const m=document.getElementById('dm'+r.dataset.i);m.hidden=!m.hidden;"
+                 "const n=r.querySelector('.dname');n.textContent=(m.hidden?'▸ ':'▾ ')+n.textContent.slice(2);}));</script>")
     pages["waivers.html"] = "".join(parts) + foot
     return pages

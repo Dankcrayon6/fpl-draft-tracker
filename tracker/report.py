@@ -95,6 +95,7 @@ td.wrap{white-space:normal;min-width:220px}.reward{color:var(--muted);font-size:
 nav{background:#fff;border-bottom:1px solid var(--line);display:flex;gap:4px;padding:0 12px;overflow-x:auto;position:sticky;top:0;z-index:5}
 nav a{padding:12px 14px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
 nav a.on{color:var(--accent);border-bottom-color:var(--accent)}
+td.zero{color:#c9c3d6}tr.total td{border-top:2px solid var(--line);background:var(--bg)}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -109,15 +110,23 @@ def _week_list(c, kind, gw):
 
 
 def _grid(c, rules, cls):
-    head = "".join(f"<th>{e(d)}</th>" for d in c["order"])
+    head = "".join(f"<th class='num'>{e(d)}</th>" for d in c["order"])
     body = []
+    totals = {d: 0 for d in c["order"]}
     for r in rules:
-        cells = "".join(
-            "<td>" + "".join(f"<span class='chip {cls}'>GW{g}</span>" for g in c["grid"][r["id"]][d]) + "</td>"
-            for d in c["order"])
+        cells = []
+        for d in c["order"]:
+            gws = c["grid"][r["id"]][d]
+            totals[d] += len(gws)
+            tip = "GW " + ", ".join(str(g) for g in gws)
+            cells.append(f"<td class='num'><span class='chip {cls}' title='{tip}'>{len(gws)}</span></td>"
+                         if gws else "<td class='num zero'>–</td>")
         body.append(f"<tr><td class='wrap'>{e(r['name'])}<br><span class='reward'>"
-                    f"{e(r.get('reward') or r.get('forfeit'))}</span></td>{cells}</tr>")
-    return f"<div class='scroll'><table><tr><th>Rule</th>{head}</tr>{''.join(body)}</table></div>"
+                    f"{e(r.get('reward') or r.get('forfeit'))}</span></td>{''.join(cells)}</tr>")
+    tot = "".join(f"<td class='num'><b>{totals[d]}</b></td>" for d in c["order"])
+    return (f"<div class='scroll'><table><tr><th>Rule</th>{head}</tr>{''.join(body)}"
+            f"<tr class='total'><td><b>Total</b></td>{tot}</tr></table></div>"
+            f"<p class='reward'>On a computer, hover over a number to see which gameweeks.</p>")
 
 
 PAGES = [("index.html", "Gameweek Summary"), ("prizes.html", "Minor Prizes"),

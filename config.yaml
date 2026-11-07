@@ -128,6 +128,6 @@ awards_night_sips_top: 8
 backgrounds:
   index: "assets/summary.jpg 36% top"
   prizes: "assets/prizes.jpg center 20%"
-  forfeits:
+  forfeits: "assets/forfeits.jpg 64% top"
   stats: "assets/stats.jpg 22% top"
-  waivers:
+  waivers: "assets/waivers.jpg 52% -230px"

@@ -29,6 +29,7 @@ transactions, and every **minor prize** and **minor forfeit** from the league ru
 ## Changing things
 - Rule names, prize/forfeit text, league id, prize money: `config.yaml`.
 - Rule logic: `tracker/rules.py` (one small function per rule, matched by id).
+- Page background images: put a picture in docs/assets/ and name it under `backgrounds` in config.yaml.
 - Stats tab: per-drafter stats (players in the XI after auto-subs) with a gameweek picker.
 - Tests: `python tests/test_rules.py` (synthetic league that triggers every rule).
 

@@ -115,11 +115,11 @@ def render_summary(c):
 
 # ------------------------------------------------------------------- html --
 CSS = """
-:root{--ink:#1d1630;--muted:#6b6380;--line:#e7e3ef;--bg:#faf9fc;--card:#fff;--accent:#5b2ca0;
+:root{--ink:#1d1630;--muted:#6b6380;--line:#e7e3ef;--bg:#faf9fc;--card:#fff;--accent:#c8312c;--header:#f06a63;
 --good:#0f7a4a;--goodbg:#e3f5ec;--bad:#b3261e;--badbg:#fbe6e4;}
 *{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 color:var(--ink);background:var(--bg)}
-header{background:var(--accent);color:#fff;padding:20px 16px}
+header{background:var(--header);color:#fff;padding:20px 16px}
 header h1{margin:0;font-size:22px}header p{margin:4px 0 0;opacity:.85;font-size:13px}
 main{max-width:1100px;margin:0 auto;padding:16px}
 section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 16px}
@@ -149,6 +149,11 @@ td.lead{background:var(--goodbg);color:var(--good);font-weight:600}
 .in{color:var(--good);font-weight:600}.out{color:var(--bad);margin-left:6px}
 tr.drow{cursor:pointer}tr.drow:hover td{background:var(--bg)}.dname{color:var(--accent)}
 tr.dmore>td{background:var(--bg);padding:8px 10px 12px}table.sub{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.bgimg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 20%}
+body.has-bg main{padding-top:min(38vh,340px)}
+.bgimg::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(20,10,10,.05),rgba(20,10,10,.45))}
+body.has-bg{background:transparent}body.has-bg section{background:rgba(255,255,255,.94);backdrop-filter:blur(3px)}
+body.has-bg main>p.reward{color:#fff}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -234,11 +239,16 @@ def render_html(c):
     status = (f"Updated through GW{gw}" if gw else "No finished gameweeks yet")
     if c["current"] and not c["current_done"] and c["current"] != gw:
         status += f" · GW{c['current']} in progress"
+    bgs = {f"{k}.html" if not k.endswith(".html") else k: v
+           for k, v in (cfg.get("backgrounds") or {}).items() if v}
+
     def page_head(active):
         tabs = "".join(f"<a href='{f}' class='{'on' if f == active else ''}'>{e(t)}</a>" for f, t in PAGES)
         return (f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
                 f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
-                f"<title>{e(c['league_name'])} tracker</title><style>{CSS}</style></head><body>"
+                f"<title>{e(c['league_name'])} tracker</title><style>{CSS}</style></head>"
+                + (f"<body class='has-bg'><div class='bgimg' style=\"background-image:url('{e(bgs[active])}')\"></div>"
+                   if bgs.get(active) else "<body>") +
                 f"<header><h1>{e(c['league_name'])}</h1><p>{status} · refreshed "
                 f"{c['now'].strftime('%a %d %b %Y, %I:%M %p')} Brisbane</p></header>"
                 f"<nav>{tabs}</nav><main>")

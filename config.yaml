@@ -120,3 +120,12 @@ forfeits:
 
 # Awards night: 1st gives out 8 sips, 2nd 7, ... last gives out 1.
 awards_night_sips_top: 8
+
+# Page background images (files in docs/assets/). Leave blank for no image.
+# Page names: index (Gameweek Summary), prizes, forfeits, stats, waivers
+backgrounds:
+  index:
+  prizes: assets/prizes.jpg
+  forfeits:
+  stats:
+  waivers:

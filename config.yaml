@@ -1,0 +1,122 @@
+# FPL Draft Round 2 — tracker settings
+# Edit the "reward" / "forfeit" text or thresholds here; the logic for each rule
+# lives in tracker/rules.py and is matched by its id.
+
+league_id: 11214
+season_label: "2026/27"
+
+# Short names used on the dashboard, keyed by FPL entry id (team id).
+# Any entry not listed falls back to the manager's first name.
+drafters: {}
+
+prize_pool: 520
+first_to_prize_money: 20   # "$20 (from Prize Pool)" rules — split on ties
+
+# The missed-penalty forfeit only counts from this gameweek onwards.
+missed_pen_from_gw: 10
+
+prizes:
+  - id: p_first_100
+    name: First drafter to score 100 in a Gameweek
+    reward: "$20 (from Prize Pool)"
+    first_only: true
+    money: true
+  - id: p_first_30_player
+    name: First drafter to have a player score 30 or more points in a Gameweek
+    reward: "$20 (from Prize Pool)"
+    first_only: true
+    money: true
+  - id: p_first_69
+    name: First drafter to score exactly 69 points in a Gameweek
+    reward: Chooses one other drafter to either take 2 shots or 1 full skull
+    first_only: true
+  - id: p_gk_2_pen_saves
+    name: GK makes 2 penalty saves in the same game
+    reward: Chooses two other drafters to either take 2 shots, or 1 full skull
+  - id: p_three_12s
+    name: 3 starting players score 12+ points in the same Gameweek
+    reward: Chooses three other players to drink a 1/2 cup of Goon
+  - id: p_bench_12_subbed
+    name: Bench player scores 12+ points and is subbed on
+    reward: Sub out one of your minor forfeits onto another player, or give out a 3/4 cup of Goon
+  - id: p_all_starters_gt3
+    name: Every starting player scores more than 3 points
+    reward: Give out 1 shot to 3 drafters
+  - id: p_all_starters_gt2
+    name: Every starting player scores more than 2 points
+    reward: Give out 2 shots
+  - id: p_50_three_in_row
+    name: 50+ points for 3 Gameweeks in a row
+    reward: Give out a 3/4 cup of Goon
+  - id: p_fwd_25
+    name: Starting forwards combine for 25+ points
+    reward: Give out 7 sips
+  - id: p_mid_30
+    name: Starting midfielders combine for 30+ points
+    reward: Give out 7 sips
+  - id: p_def_35
+    name: Starting defenders combine for 35+ points
+    reward: Give out 7 sips
+  - id: p_80_plus
+    name: Score 80+ points in a Gameweek
+    reward: Give out 5 sips
+  - id: p_hattrick
+    name: Any player (who counted) scores a hattrick
+    reward: Give out 5 sips
+  - id: p_gk_assist
+    name: GK gets an assist
+    reward: Give out 5 sips
+  - id: p_def_2_goals
+    name: Any defender scores 2+ goals in a Gameweek
+    reward: Give out 5 sips
+
+season_awards:
+  most: "Give out 1 shot or a 3/4 cup of goon to each player"
+  least: "Give out 2 shots and a 1/2 cup of goon (must be 3 separate drafters)"
+
+forfeits:
+  - id: f_two_reds
+    name: Two starters get a red card
+    forfeit: Take 2 shots
+  - id: f_20_or_less
+    name: Score 20 points or less in a Gameweek
+    forfeit: Take 2 shots
+  - id: f_bench_12_not_subbed
+    name: 12+ point player on the bench and not subbed on
+    forfeit: Take 1 shot
+  - id: f_bench_20
+    name: Bench scores 20+ points
+    forfeit: Take 1 shot
+  - id: f_both_gk_1
+    name: Both GKs score 1 or fewer points
+    forfeit: Take 1 shot
+  - id: f_gk_red
+    name: Starting GK gets a red card
+    forfeit: Drink a 1/2 cup of Goon
+  - id: f_three_zero
+    name: 3+ starters (not subbed off) score 0 or less
+    forfeit: Drink a 1/2 cup of Goon
+  - id: f_25_or_less
+    name: Score 25 points or less in a Gameweek
+    forfeit: Take 5 sips
+  - id: f_four_carded
+    name: Four or more starters get carded
+    forfeit: Take 5 sips
+  - id: f_conceded_5
+    name: GK/Defender who played, and their team conceded 5+
+    forfeit: Take 5 sips
+  - id: f_squad_red
+    name: Any squad player gets a red card (not GK)
+    forfeit: Take 4 sips
+  - id: f_two_zero
+    name: 2+ starters (not subbed off) score 0 or less
+    forfeit: Take 4 sips
+  - id: f_own_goal
+    name: Any player (who counted) scores an own goal
+    forfeit: Take 4 sips
+  - id: f_missed_pen
+    name: Starting player misses a penalty (GW10 onwards)
+    forfeit: Take 4 sips
+
+# Awards night: 1st gives out 8 sips, 2nd 7, ... last gives out 1.
+awards_night_sips_top: 8

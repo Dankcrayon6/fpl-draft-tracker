@@ -1,0 +1,39 @@
+name: Update tracker
+
+on:
+  schedule:
+    # Every day at 7:30am Brisbane (21:30 UTC). Each run recalculates the whole
+    # season, so extra runs are harmless and late score corrections get picked up.
+    - cron: "30 21 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tracker
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Fetch data and rebuild dashboard
+        run: python -m tracker.main
+      - name: Post to Discord (only if DISCORD_WEBHOOK secret is set)
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          PAGE_URL: https://dankcrayon6.github.io/fpl-draft-tracker/
+        run: python -m tracker.discord
+      - name: Save results
+        run: |
+          git config user.name "fpl-tracker-bot"
+          git config user.email "fpl-tracker-bot@users.noreply.github.com"
+          git add docs data
+          git diff --cached --quiet || git commit -m "Tracker update $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

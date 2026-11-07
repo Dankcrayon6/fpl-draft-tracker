@@ -6,6 +6,9 @@ on:
     # season, so extra runs are harmless and late score corrections get picked up.
     - cron: "30 21 * * *"
   workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths: ["tracker/**", "config.yaml", ".github/workflows/**"]
 
 permissions:
   contents: write

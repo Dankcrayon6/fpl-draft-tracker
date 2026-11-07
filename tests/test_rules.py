@@ -44,6 +44,7 @@ with tempfile.TemporaryDirectory() as out:
     assert ctx["money"]["Aidan"] == 20 and ctx["money"]["Bronson"] == 20, ctx["money"]
     assert not missing and not extra
     assert not [w for w in ctx["warnings"] if "computed" in w], ctx["warnings"]
-    html = open(os.path.join(out, "index.html")).read()
-    assert "Minor forfeits tracker" in html and "GW3 wrap" in html
+    assert "GW3 wrap" in open(os.path.join(out, "index.html")).read()
+    assert "Minor prizes tracker" in open(os.path.join(out, "prizes.html")).read()
+    assert "Minor forfeits tracker" in open(os.path.join(out, "forfeits.html")).read()
 print("ALL RULE TESTS PASSED")

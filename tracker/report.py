@@ -92,6 +92,9 @@ td.wrap{white-space:normal;min-width:220px}.reward{color:var(--muted);font-size:
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .card{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .card b{display:block;font-size:20px}.card span{color:var(--muted);font-size:12px}
+nav{background:#fff;border-bottom:1px solid var(--line);display:flex;gap:4px;padding:0 12px;overflow-x:auto;position:sticky;top:0;z-index:5}
+nav a{padding:12px 14px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
+nav a.on{color:var(--accent);border-bottom-color:var(--accent)}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -117,16 +120,26 @@ def _grid(c, rules, cls):
     return f"<div class='scroll'><table><tr><th>Rule</th>{head}</tr>{''.join(body)}</table></div>"
 
 
+PAGES = [("index.html", "Gameweek Summary"), ("prizes.html", "Minor Prizes"),
+         ("forfeits.html", "Minor Forfeits")]
+
+
 def render_html(c):
     cfg, gw = c["cfg"], c["latest"]
     status = (f"Updated through GW{gw}" if gw else "No finished gameweeks yet")
     if c["current"] and not c["current_done"] and c["current"] != gw:
         status += f" · GW{c['current']} in progress"
-    out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
-           f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
-           f"<title>{e(c['league_name'])} tracker</title><style>{CSS}</style></head><body>",
-           f"<header><h1>{e(c['league_name'])}</h1><p>{status} · refreshed "
-           f"{c['now'].strftime('%a %d %b %Y, %I:%M %p')} Brisbane</p></header><main>"]
+    def page_head(active):
+        tabs = "".join(f"<a href='{f}' class='{'on' if f == active else ''}'>{e(t)}</a>" for f, t in PAGES)
+        return (f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
+                f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
+                f"<title>{e(c['league_name'])} tracker</title><style>{CSS}</style></head><body>"
+                f"<header><h1>{e(c['league_name'])}</h1><p>{status} · refreshed "
+                f"{c['now'].strftime('%a %d %b %Y, %I:%M %p')} Brisbane</p></header>"
+                f"<nav>{tabs}</nav><main>")
+    foot = ("<p class='reward' style='text-align:center'>Data from the FPL Draft site (unofficial feed). "
+            "Rules live in config.yaml.</p></main></body></html>")
+    out = []
 
     if gw:
         rows = c["latest_rows"]
@@ -173,8 +186,6 @@ def render_html(c):
                f"<h3>Least minor achievements (currently)</h3><p><b>{e(', '.join(c['least']))}</b> — "
                f"{e(cfg['season_awards']['least'])}</p></section>")
 
-    out.append(f"<section><h2>Minor prizes tracker</h2>{_grid(c, cfg['prizes'], 'p')}</section>")
-    out.append(f"<section><h2>Minor forfeits tracker</h2>{_grid(c, cfg['forfeits'], 'f')}</section>")
 
     # GW points matrix
     head = "".join(f"<th class='num'>{g}</th>" for g in c["gws"])
@@ -193,6 +204,33 @@ def render_html(c):
     if c["warnings"]:
         out.append("<section><h2>Data notes</h2><ul class='warn'>" +
                    "".join(f"<li>{e(w)}</li>" for w in c["warnings"]) + "</ul></section>")
-    out.append("<p class='reward' style='text-align:center'>Data from the FPL Draft site (unofficial feed). "
-               "Rules live in config.yaml.</p></main></body></html>")
-    return "".join(out)
+    pages = {"index.html": page_head("index.html") + "".join(out) + foot}
+
+    # --- Minor prizes page
+    by = sorted(c["drafters"], key=lambda d: (-c["n_prize"][d], d))
+    rows = "".join(f"<tr><td><b>{e(d)}</b></td><td class='num'>{c['n_prize'][d]}</td>"
+                   f"<td class='num'>{'$%g' % c['money'][d] if c['money'][d] else ''}</td></tr>" for d in by)
+    recent = [h for h in c["hits"] if h["kind"] == "prize"][::-1][:15]
+    rec = "".join(f"<li>GW{h['gw']} · <b>{e(h['drafter'])}</b> — {e(c['rule_name'][h['rule']])}: {e(h['detail'])}</li>"
+                  for h in recent) or "<li>None yet.</li>"
+    pages["prizes.html"] = (page_head("prizes.html") +
+        f"<section><h2>Minor achievements tally</h2><div class='scroll'><table><tr><th>Drafter</th>"
+        f"<th class='num'>Achievements</th><th class='num'>Prize $</th></tr>{rows}</table></div>"
+        f"<p class='reward'>Most (currently): <b>{e(', '.join(c['most']))}</b> — {e(cfg['season_awards']['most'])}<br>"
+        f"Least (currently): <b>{e(', '.join(c['least']))}</b> — {e(cfg['season_awards']['least'])}</p></section>"
+        f"<section><h2>Minor prizes tracker</h2>{_grid(c, cfg['prizes'], 'p')}</section>"
+        f"<section><h2>Recent prizes</h2><ul>{rec}</ul></section>" + foot)
+
+    # --- Minor forfeits page
+    by = sorted(c["drafters"], key=lambda d: (-c["n_forf"][d], d))
+    rows = "".join(f"<tr><td><b>{e(d)}</b></td><td class='num'>{c['n_forf'][d]}</td></tr>" for d in by)
+    recent = [h for h in c["hits"] if h["kind"] == "forfeit"][::-1][:15]
+    rec = "".join(f"<li>GW{h['gw']} · <b>{e(h['drafter'])}</b> — {e(c['rule_name'][h['rule']])}: {e(h['detail'])}"
+                  f"<br><span class='reward'>→ {e(c['rule_text'][h['rule']])}</span></li>"
+                  for h in recent) or "<li>None yet.</li>"
+    pages["forfeits.html"] = (page_head("forfeits.html") +
+        f"<section><h2>Forfeit tally</h2><div class='scroll'><table><tr><th>Drafter</th>"
+        f"<th class='num'>Forfeits copped</th></tr>{rows}</table></div></section>"
+        f"<section><h2>Minor forfeits tracker</h2>{_grid(c, cfg['forfeits'], 'f')}</section>"
+        f"<section><h2>Recent forfeits</h2><ul>{rec}</ul></section>" + foot)
+    return pages

@@ -87,8 +87,9 @@ def run(offline_dir=None, out_dir=None):
     now = dt.datetime.now(dt.timezone(dt.timedelta(hours=10)))
     ctx = report.build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
                                finished, current, current_done, warnings, now)
-    with open(os.path.join(out_dir, "index.html"), "w") as f:
-        f.write(report.render_html(ctx))
+    for fname, html in report.render_html(ctx).items():
+        with open(os.path.join(out_dir, fname), "w") as f:
+            f.write(html)
     with open(os.path.join(out_dir, "summary.md"), "w") as f:
         f.write(report.render_summary(ctx))
     with open(os.path.join(out_dir, "results.json"), "w") as f:

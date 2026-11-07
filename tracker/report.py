@@ -149,10 +149,12 @@ td.lead{background:var(--goodbg);color:var(--good);font-weight:600}
 .in{color:var(--good);font-weight:600}.out{color:var(--bad);margin-left:6px}
 tr.drow{cursor:pointer}tr.drow:hover td{background:var(--bg)}.dname{color:var(--accent)}
 tr.dmore>td{background:var(--bg);padding:8px 10px 12px}table.sub{background:var(--card);border:1px solid var(--line);border-radius:8px}
-.bgimg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center 20%}
+.bgimg{position:sticky;top:0;height:100vh;margin-bottom:-100vh;z-index:0;display:flex;background:#111}
+body.has-bg main{position:relative;z-index:1}
+.bgimg>div{flex:1;background-size:cover}
 body.has-bg main{padding-top:min(38vh,340px)}
-.bgimg::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(20,10,10,.05),rgba(20,10,10,.45))}
-body.has-bg{background:transparent}body.has-bg section{background:rgba(255,255,255,.94);backdrop-filter:blur(3px)}
+.bgimg::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(20,10,10,.05),rgba(20,10,10,.45))}
+body.has-bg{background:#111}body.has-bg section{background:rgba(255,255,255,.94);backdrop-filter:blur(3px)}
 body.has-bg main>p.reward{color:#fff}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
@@ -241,17 +243,22 @@ def render_html(c):
         status += f" · GW{c['current']} in progress"
     bgs = {f"{k}.html" if not k.endswith(".html") else k: v
            for k, v in (cfg.get("backgrounds") or {}).items() if v}
+    bgs = {k: (v if isinstance(v, list) else [v]) for k, v in bgs.items()}
 
     def page_head(active):
         tabs = "".join(f"<a href='{f}' class='{'on' if f == active else ''}'>{e(t)}</a>" for f, t in PAGES)
+        bg = ""
+        if bgs.get(active):
+            bg = "<div class='bgimg'>" + "".join(
+                f"<div style=\"background-image:url('{e(u.split()[0])}');background-position:"
+                f"{e(' '.join(u.split()[1:]) or 'center top')}\"></div>" for u in bgs[active]) + "</div>"
         return (f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
                 f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
                 f"<title>{e(c['league_name'])} tracker</title><style>{CSS}</style></head>"
-                + (f"<body class='has-bg'><div class='bgimg' style=\"background-image:url('{e(bgs[active])}')\"></div>"
-                   if bgs.get(active) else "<body>") +
+                f"<body{' class=has-bg' if bg else ''}>"
                 f"<header><h1>{e(c['league_name'])}</h1><p>{status} · refreshed "
                 f"{c['now'].strftime('%a %d %b %Y, %I:%M %p')} Brisbane</p></header>"
-                f"<nav>{tabs}</nav><main>")
+                f"<nav>{tabs}</nav>{bg}<main>")
     foot = ("<p class='reward' style='text-align:center'>Data from the FPL Draft site (unofficial feed). "
             "Rules live in config.yaml.</p></main></body></html>")
     out = []

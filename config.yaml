@@ -122,10 +122,12 @@ forfeits:
 awards_night_sips_top: 8
 
 # Page background images (files in docs/assets/). Leave blank for no image.
+# Optionally add a position after the file name (e.g. "center top") to choose
+# which part of the photo stays in view. Use a list to show several images side by side.
 # Page names: index (Gameweek Summary), prizes, forfeits, stats, waivers
 backgrounds:
-  index:
-  prizes: assets/prizes.jpg
+  index: ["assets/summary-1.jpg center top", "assets/summary-2.jpg 28% top"]
+  prizes: "assets/prizes.jpg center 20%"
   forfeits:
   stats:
   waivers:

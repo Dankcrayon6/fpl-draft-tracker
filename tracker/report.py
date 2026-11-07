@@ -28,6 +28,24 @@ def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
         if h["rule"] in money_rules:
             money[h["drafter"]] += cfg["first_to_prize_money"] * h["share"]
 
+    # per drafter per gameweek stat lines (players whose score went into the total)
+    stat_rows = {d: {} for d in drafters}
+    for gw in gws:
+        for tw in teamweeks[gw]:
+            xi = [p for p in tw.players if p.in_final_xi]
+            stat_rows[tw.drafter][gw] = dict(
+                pts=tw.points,
+                goals=sum(p.goals for p in xi), xg=round(sum(p.xg for p in xi), 2),
+                assists=sum(p.assists for p in xi), xa=round(sum(p.xa for p in xi), 2),
+                cs=sum(p.clean_sheets for p in xi if p.etype in (1, 2)),
+                dc=sum(p.dc_hits for p in xi), bonus=sum(p.bonus for p in xi),
+                saves=sum(p.saves for p in xi), ps=sum(p.penalties_saved for p in xi),
+                pm=sum(p.penalties_missed for p in xi), og=sum(p.own_goals for p in xi),
+                yc=sum(p.yellow_cards for p in xi), rc=sum(p.red_cards for p in xi),
+                zero=sum(1 for p in xi if p.points <= 0),
+                bench=sum(p.points for p in tw.final_bench),
+                subs=sum(1 for p in tw.players if p.subbed_on))
+
     latest = gws[-1] if gws else None
     latest_rows = sorted(teamweeks.get(latest, []), key=lambda t: -t.points) if latest else []
 
@@ -38,7 +56,7 @@ def build_context(cfg, league, names, teams, teamweeks, hits, tx_counts,
                 tx={d: tx_counts.get(eid_by_name[d], 0) for d in drafters},
                 gws=gws, pts=pts, total=total, bench=bench, grid=grid, hits=hits,
                 n_prize=n_prize, n_forf=n_forf, money=money, latest=latest, latest_rows=latest_rows,
-                current=current, current_done=current_done, warnings=warnings, now=now,
+                stat_rows=stat_rows, current=current, current_done=current_done, warnings=warnings, now=now,
                 most=[d for d in drafters if n_prize[d] == hi], least=[d for d in drafters if n_prize[d] == lo],
                 rule_name={r["id"]: r["name"] for r in rules},
                 rule_text={r["id"]: r.get("reward") or r.get("forfeit") for r in rules})
@@ -96,6 +114,11 @@ nav{background:#fff;border-bottom:1px solid var(--line);display:flex;gap:4px;pad
 nav a{padding:12px 14px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;white-space:nowrap;border-bottom:3px solid transparent}
 nav a.on{color:var(--accent);border-bottom-color:var(--accent)}
 td.zero{color:#c9c3d6}tr.total td{border-top:2px solid var(--line);background:var(--bg)}
+.picker{display:block;margin:0 0 12px;font-weight:600;font-size:14px}
+.picker select{margin-left:6px;font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+th.sortable{cursor:pointer;user-select:none}th.sorted{color:var(--accent)}
+table.stats th:first-child,table.stats td:first-child{position:sticky;left:0;background:var(--card);z-index:1}
+td.lead{background:var(--goodbg);color:var(--good);font-weight:600}
 ul{margin:4px 0;padding-left:18px}li{margin:3px 0}.warn{color:var(--muted);font-size:12px}
 """
 
@@ -130,7 +153,50 @@ def _grid(c, rules, cls):
 
 
 PAGES = [("index.html", "Gameweek Summary"), ("prizes.html", "Minor Prizes"),
-         ("forfeits.html", "Minor Forfeits")]
+         ("forfeits.html", "Minor Forfeits"), ("stats.html", "Stats")]
+
+STAT_COLS = [  # key, header, tooltip
+    ("pts", "Pts", "Points"), ("avg", "Avg", "Average points per gameweek"),
+    ("best", "Best GW", "Highest gameweek score"), ("worst", "Worst GW", "Lowest gameweek score"),
+    ("goals", "G", "Goals"), ("xg", "xG", "Expected goals"), ("assists", "A", "Assists"),
+    ("xa", "xA", "Expected assists"), ("cs", "CS", "Clean sheets (GK/DEF)"),
+    ("dc", "DC", "Defensive contribution thresholds reached"), ("bonus", "Bonus", "Bonus points"),
+    ("saves", "Saves", "Goalkeeper saves"), ("ps", "Pen saves", "Penalties saved"),
+    ("pm", "Pen misses", "Penalties missed"), ("og", "OG", "Own goals"),
+    ("yc", "YC", "Yellow cards"), ("rc", "RC", "Red cards"),
+    ("zero", "Zero pts", "Players in the final XI who scored 0 or less"),
+    ("bench", "Bench pts", "Points left on the bench"), ("subs", "Auto-subs", "Bench players auto-subbed on"),
+]
+
+STATS_JS = r"""
+const D = JSON.parse(document.getElementById('statdata').textContent);
+const sel = document.getElementById('gwsel'), tbody = document.getElementById('stbody');
+let sortKey = 'pts', sortDir = -1;
+function gwsFor(v){ if(v==='all') return D.gws; if(v==='last5') return D.gws.slice(-5); return [Number(v)]; }
+function calc(){
+  const gws = gwsFor(sel.value);
+  return D.drafters.map(d => {
+    const r = {name:d}; D.cols.forEach(c => r[c]=0);
+    const pts = [];
+    gws.forEach(g => { const s = (D.rows[d]||{})[g]; if(!s) return; pts.push(s.pts);
+      for (const k in s) r[k] += s[k]; });
+    r.avg = pts.length ? r.pts/pts.length : 0;
+    r.best = pts.length ? Math.max(...pts) : 0; r.worst = pts.length ? Math.min(...pts) : 0;
+    return r; });
+}
+function fmt(k,v){ return (k==='avg'||k==='xg'||k==='xa') ? v.toFixed(1) : v; }
+function render(){
+  const rows = calc().sort((a,b)=> sortDir*((a[sortKey]-b[sortKey]) || (a.name<b.name?1:-1)));
+  const max = {}; D.cols.forEach(c => max[c] = Math.max(...rows.map(r=>r[c])));
+  tbody.innerHTML = rows.map(r => '<tr><td><b>'+r.name+'</b></td>' + D.cols.map(c =>
+     '<td class="num'+(r[c]===max[c] && max[c]>0 ? ' lead':'')+'">'+fmt(c,r[c])+'</td>').join('') + '</tr>').join('');
+  document.querySelectorAll('th[data-k]').forEach(th => th.classList.toggle('sorted', th.dataset.k===sortKey));
+}
+document.querySelectorAll('th[data-k]').forEach(th => th.addEventListener('click', () => {
+  if (sortKey === th.dataset.k) sortDir = -sortDir; else { sortKey = th.dataset.k; sortDir = -1; }
+  render(); }));
+sel.addEventListener('change', render); render();
+"""
 
 
 def render_html(c):
@@ -242,4 +308,23 @@ def render_html(c):
         f"<th class='num'>Forfeits copped</th></tr>{rows}</table></div></section>"
         f"<section><h2>Minor forfeits tracker</h2>{_grid(c, cfg['forfeits'], 'f')}</section>"
         f"<section><h2>Recent forfeits</h2><ul>{rec}</ul></section>" + foot)
+
+    # --- Stats page
+    import json as _json
+    cols = [k for k, _, _ in STAT_COLS]
+    data = {"gws": c["gws"], "drafters": [e(d) for d in c["drafters"]],
+            "rows": {e(d): v for d, v in c["stat_rows"].items()}, "cols": cols}
+    data_json = _json.dumps(data).replace("</", "<\\/")
+    opts = "<option value='all'>Whole season</option><option value='last5'>Last 5 gameweeks</option>" + "".join(
+        f"<option value='{g}'>Gameweek {g}</option>" for g in reversed(c["gws"]))
+    ths = "".join(f"<th class='num sortable' data-k='{k}' title='{e(t)}'>{e(h)}</th>" for k, h, t in STAT_COLS)
+    pages["stats.html"] = (page_head("stats.html") +
+        f"<section><h2>Stats</h2><label class='picker'>Show stats for "
+        f"<select id='gwsel'>{opts}</select></label>"
+        f"<div class='scroll'><table class='stats'><thead><tr><th>Drafter</th>{ths}</tr></thead>"
+        f"<tbody id='stbody'></tbody></table></div>"
+        f"<p class='reward'>Counts players whose score went into the team total (the XI after auto-subs). "
+        f"Tap a column heading to sort. Green = top of that column. DC = defensive contribution thresholds hit.</p>"
+        f"</section><script type='application/json' id='statdata'>{data_json}</script>"
+        f"<script>{STATS_JS}</script>" + foot)
     return pages

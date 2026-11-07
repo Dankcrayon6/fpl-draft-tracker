@@ -19,6 +19,7 @@ class FixtureLine:
     minutes: int = 0
     goals: int = 0
     penalties_saved: int = 0
+    dc_hit: bool = False               # reached the defensive contribution threshold
     team_conceded: int | None = None   # goals the player's club conceded in this fixture
 
 
@@ -37,6 +38,11 @@ class Player:
     penalties_missed: int = 0
     yellow_cards: int = 0
     red_cards: int = 0
+    clean_sheets: int = 0
+    saves: int = 0
+    bonus: int = 0
+    xg: float = 0.0
+    xa: float = 0.0
     fixtures: list = field(default_factory=list)   # list[FixtureLine]
     position: int = 0          # 1-15 slot in the drafter's picks
     subbed_on: bool = False
@@ -51,6 +57,15 @@ class Player:
         if self.is_starter:
             return not self.subbed_off and self.minutes > 0
         return self.subbed_on
+
+    @property
+    def in_final_xi(self):
+        """Players whose score went into the team total (played or not)."""
+        return (self.is_starter and not self.subbed_off) or self.subbed_on
+
+    @property
+    def dc_hits(self):
+        return sum(1 for f in self.fixtures if f.dc_hit)
 
     @property
     def label(self):
@@ -104,17 +119,17 @@ def _explain_lines(explain):
     out = []
     for item in explain or []:
         if isinstance(item, dict):
-            fx = item.get("fixture")
-            stats = {s.get("identifier") or s.get("stat"): s.get("value", 0) for s in item.get("stats", [])}
+            fx, rows = item.get("fixture"), item.get("stats", [])
         elif isinstance(item, (list, tuple)) and len(item) == 2:
             rows, fx = item
-            stats = {}
-            for s in rows or []:
-                key = s.get("stat") or s.get("identifier") or s.get("name")
-                stats[key] = s.get("value", 0)
         else:
             continue
-        out.append((fx, stats))
+        stats, pts = {}, {}
+        for s in rows or []:
+            key = s.get("stat") or s.get("identifier") or s.get("name")
+            stats[key] = s.get("value", 0)
+            pts[key] = s.get("points", 0)
+        out.append((fx, stats, pts))
     return out
 
 
@@ -141,13 +156,19 @@ def build_players(bootstrap, live):
             penalties_missed=int(st.get("penalties_missed", 0) or 0),
             yellow_cards=int(st.get("yellow_cards", 0) or 0),
             red_cards=int(st.get("red_cards", 0) or 0),
+            clean_sheets=int(st.get("clean_sheets", 0) or 0),
+            saves=int(st.get("saves", 0) or 0),
+            bonus=int(st.get("bonus", 0) or 0),
+            xg=float(st.get("expected_goals", 0) or 0),
+            xa=float(st.get("expected_assists", 0) or 0),
         )
-        for fx_id, stats in _explain_lines(row.get("explain")):
+        for fx_id, stats, pts in _explain_lines(row.get("explain")):
             fl = FixtureLine(
                 fixture=fx_id,
                 minutes=int(stats.get("minutes", 0) or 0),
                 goals=int(stats.get("goals_scored", 0) or 0),
                 penalties_saved=int(stats.get("penalties_saved", 0) or 0),
+                dc_hit=(pts.get("defensive_contribution", 0) or 0) > 0,
             )
             fx = fixtures.get(fx_id)
             if fx and fx.get("team_h_score") is not None and p.team:

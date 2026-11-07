@@ -129,5 +129,5 @@ backgrounds:
   index: "assets/summary.jpg 36% top"
   prizes: "assets/prizes.jpg center 20%"
   forfeits:
-  stats:
+  stats: "assets/stats.jpg 22% top"
   waivers:

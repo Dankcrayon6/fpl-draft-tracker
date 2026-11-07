@@ -152,7 +152,7 @@ tr.dmore>td{background:var(--bg);padding:8px 10px 12px}table.sub{background:var(
 .bgimg{position:sticky;top:0;height:100vh;margin-bottom:-100vh;z-index:0;display:flex;background:#111}
 body.has-bg main{position:relative;z-index:1}
 .bgimg>div{flex:1;background-size:cover}
-body.has-bg main{padding-top:min(56vh,500px)}
+body.has-bg main{padding-top:min(38vh,340px)}
 .bgimg::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(20,10,10,.05),rgba(20,10,10,.45))}
 body.has-bg{background:#111}body.has-bg section{background:rgba(255,255,255,.94);backdrop-filter:blur(3px)}
 body.has-bg main>p.reward{color:#fff}

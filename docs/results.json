@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T08:06:55.808147+10:00",
+ "updated": "2026-11-10T08:15:38.435070+10:00",
  "finished_gws": [
   1,
   2,
@@ -9,7 +9,8 @@
   6,
   7,
   8,
-  9
+  9,
+  10
  ],
  "hits": [
   {
@@ -406,6 +407,78 @@
    "entry_id": 55431,
    "drafter": "Campbell",
    "detail": "Botman 0, F.Kad\u0131o\u011flu 0",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 10,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "bench 21 pts (Kelleher 2, Madueke 8, Saliba 0, E.Le F\u00e9e 11)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_four_carded",
+   "gw": 10,
+   "entry_id": 55428,
+   "drafter": "Bronson",
+   "detail": "5 carded: Smith, Dunk, Van de Ven, Schade, Tavernier",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 10,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Thiago sent off",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_three_zero",
+   "gw": 10,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Gu\u00e9hi 0, Botman 0, Thiago -2",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_two_zero",
+   "gw": 10,
+   "entry_id": 55431,
+   "drafter": "Campbell",
+   "detail": "Gu\u00e9hi 0, Botman 0, Thiago -2",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_50_three_in_row",
+   "gw": 10,
+   "entry_id": 55424,
+   "drafter": "Aidan",
+   "detail": "GW8-10 all 50+",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_50_three_in_row",
+   "gw": 10,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "GW8-10 all 50+",
+   "share": 1.0
+  },
+  {
+   "kind": "prize",
+   "rule": "p_fwd_25",
+   "gw": 10,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "FWDs 35 pts (Barry 16, Isak 8, N.Jackson 11)",
    "share": 1.0
   }
  ],

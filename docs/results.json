@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T08:21:07.552334+10:00",
+ "updated": "2026-11-25T08:27:25.306715+10:00",
  "finished_gws": [
   1,
   2,
@@ -10,7 +10,8 @@
   7,
   8,
   9,
-  10
+  10,
+  11
  ],
  "hits": [
   {
@@ -479,6 +480,60 @@
    "entry_id": 55430,
    "drafter": "Harry",
    "detail": "FWDs 35 pts (Barry 16, Isak 8, N.Jackson 11)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_12_not_subbed",
+   "gw": 11,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "Hill 14 left on bench",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_12_not_subbed",
+   "gw": 11,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "McBurnie 13 left on bench",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 11,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "bench 23 pts (Kelleher 6, Hill 14, E.Le F\u00e9e 3, Saliba 0)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_bench_20",
+   "gw": 11,
+   "entry_id": 55429,
+   "drafter": "Rory",
+   "detail": "bench 25 pts (A.Becker 7, Justin 4, McBurnie 13, Wissa 1)",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_four_carded",
+   "gw": 11,
+   "entry_id": 55425,
+   "drafter": "Jono",
+   "detail": "4 carded: Donnarumma, Maatsen, Kudus, Barcola",
+   "share": 1.0
+  },
+  {
+   "kind": "forfeit",
+   "rule": "f_squad_red",
+   "gw": 11,
+   "entry_id": 55430,
+   "drafter": "Harry",
+   "detail": "Tarkowski sent off",
    "share": 1.0
   }
  ],

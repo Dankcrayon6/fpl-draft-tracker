@@ -1,26 +1,25 @@
-⚽ FPL Draft Round 2 — GW10 wrap
+⚽ FPL Draft Round 2 — GW11 wrap
 
-🔝 Top score: Aidan 64
-🪣 Wooden spoon: Dilan 33
+🔝 Top score: Aidan 44
+🪣 Wooden spoon: Harry 34
 
 📊 Table
-1. Aidan — 507 (64 this GW)
-2. Harry — 483 (56 this GW)
-3. Bronson — 455 (41 this GW)
-4. Jono — 450 (56 this GW)
-5. Rory — 437 (56 this GW)
-6. Dilan — 426 (33 this GW)
-7. Campbell — 381 (37 this GW)
-8. Julius — 354 (40 this GW)
+1. Aidan — 551 (44 this GW)
+2. Harry — 517 (34 this GW)
+3. Bronson — 494 (39 this GW)
+4. Jono — 489 (39 this GW)
+5. Rory — 475 (38 this GW)
+6. Dilan — 466 (40 this GW)
+7. Campbell — 421 (40 this GW)
+8. Julius — 390 (36 this GW)
 
 🏆 Minor prizes
-• Aidan: 50+ points for 3 Gameweeks in a row — GW8-10 all 50+ → Give out a 3/4 cup of Goon
-• Harry: 50+ points for 3 Gameweeks in a row — GW8-10 all 50+ → Give out a 3/4 cup of Goon
-• Harry: Starting forwards combine for 25+ points — FWDs 35 pts (Barry 16, Isak 8, N.Jackson 11) → Give out 7 sips
+• None this week
 
 🍺 Minor forfeits
-• Harry: Bench scores 20+ points — bench 21 pts (Kelleher 2, Madueke 8, Saliba 0, E.Le Fée 11) → Take 1 shot
-• Bronson: Four or more starters get carded — 5 carded: Smith, Dunk, Van de Ven, Schade, Tavernier → Take 5 sips
-• Campbell: Any squad player gets a red card (not GK) — Thiago sent off → Take 4 sips
-• Campbell: 3+ starters (not subbed off) score 0 or less — Guéhi 0, Botman 0, Thiago -2 → Drink a 1/2 cup of Goon
-• Campbell: 2+ starters (not subbed off) score 0 or less — Guéhi 0, Botman 0, Thiago -2 → Take 4 sips
+• Harry: 12+ point player on the bench and not subbed on — Hill 14 left on bench → Take 1 shot
+• Rory: 12+ point player on the bench and not subbed on — McBurnie 13 left on bench → Take 1 shot
+• Harry: Bench scores 20+ points — bench 23 pts (Kelleher 6, Hill 14, E.Le Fée 3, Saliba 0) → Take 1 shot
+• Rory: Bench scores 20+ points — bench 25 pts (A.Becker 7, Justin 4, McBurnie 13, Wissa 1) → Take 1 shot
+• Jono: Four or more starters get carded — 4 carded: Donnarumma, Maatsen, Kudus, Barcola → Take 5 sips
+• Harry: Any squad player gets a red card (not GK) — Tarkowski sent off → Take 4 sips
